@@ -61,8 +61,16 @@ public class Settings {
 		
 	}
 	
+	public Save getSave() {
+		return save;
+	}
+	
 	public void setSaveFile(File f) {
 		saveFile = f;
+	}
+	
+	public File getSaveFile() {
+		return saveFile;
 	}
 	
 	public void setStreamPath(String path) {
@@ -176,14 +184,19 @@ public class Settings {
 						threadLog = "";
 					}
 					try {
-						Thread.sleep(100);
+						Thread.sleep(5);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
+				killThread = false;
 			}
 		});
 		logThread.start();
+	}
+	
+	public void killSystemLog() {
+		killThread = true;
 	}
 	
 	public void log(String n) {

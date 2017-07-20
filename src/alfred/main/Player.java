@@ -17,8 +17,14 @@ private static final long serialVersionUID = 1L;
 	private AlfredColor[][] color;
 	private int ticks = 0;
 
+	private int assigned_number = 0;
+	
 	public Player() {
 		ticks = 0;
+	}
+	
+	public void setAssignedNumber(int i) {
+		assigned_number = i;
 	}
 	
 	public void setScreenColor(AlfredColor[][] c) {
@@ -32,6 +38,10 @@ private static final long serialVersionUID = 1L;
 	public void setScreen(int[] screen, AlfredColor[][] rgb) {
 		screenCoords = screen;
 		this.color = rgb;
+	}
+	
+	public int getAssignedNumber() {
+		return assigned_number;
 	}
 	
 	public int[] getScreenCoords() {

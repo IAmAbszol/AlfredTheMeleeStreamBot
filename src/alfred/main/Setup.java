@@ -31,6 +31,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import alfred.utils.AlfredColor;
 import alfred.utils.AveragePixels;
 import alfred.utils.FFmpeg;
 
@@ -290,12 +291,8 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				case P1:
 					if(xm.size() == 0) return;
 					for(int i = 0; i < xm.size(); i++) {
-						try {
-							int[] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
-							setting.addPlayerOne(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						AlfredColor[][] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
+						setting.addPlayerOne(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
 					}
 					instructions.setText("Player Two: Highlight the star position, watch video for example.");
 					px = py = 0;
@@ -312,12 +309,8 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				case P2:
 					if(xm.size() == 0) return;
 					for(int i = 0; i < xm.size(); i++) {
-						try {
-							int[] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
-							setting.addPlayerTwo(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
+						AlfredColor[][] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
+						setting.addPlayerTwo(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
 					}
 					setting.setOffset(offset);
 					setting.setError(.2);
@@ -539,14 +532,6 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				mm.add(image);
 				locked = true;
 				System.out.println("Added Image");
-				try {
-					int[] c = AveragePixels.averageColor(image, x, y, w, h);
-					System.out.println((c[0] + c[1] + c[2]) / 3);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
 			}
 			break;
 		case P2:
@@ -558,13 +543,6 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				hm.add(h);
 				mm.add(image);
 				System.out.println("Added Image");
-				try {
-					int[] c = AveragePixels.averageColor(image, x, y, w, h);
-					System.out.println((c[0] + c[1] + c[2]) / 3);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				
 			}
 			break;

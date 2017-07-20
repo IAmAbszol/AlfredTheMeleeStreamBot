@@ -19,6 +19,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import alfred.utils.AlfredColor;
 import alfred.utils.Save;
 
 public class Settings {
@@ -112,27 +113,27 @@ public class Settings {
 		return playerTwo;
 	}
 	
-	public void addPlayerOne(int x, int y, int w, int h, int[] color) {
+	public void addPlayerOne(int x, int y, int w, int h, AlfredColor[][] color) {
 		
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
 		playerOne.add(p);
 	}
 	
-	public void addPlayerColorOne(int[] color) {
+	public void addPlayerColorOne(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
 		playerOne.add(p);
 	}
 	
-	public void addPlayerTwo(int x, int y, int w, int h, int[] color) {
+	public void addPlayerTwo(int x, int y, int w, int h, AlfredColor[][] color) {
 		
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
 		playerTwo.add(p);
 	}
 	
-	public void addPlayerColorTwo(int[] color) {
+	public void addPlayerColorTwo(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
 		playerTwo.add(p);

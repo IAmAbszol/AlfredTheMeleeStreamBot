@@ -2,6 +2,8 @@ package alfred.main;
 
 import java.io.Serializable;
 
+import alfred.utils.AlfredColor;
+
 /*
  * Player controls the stock coordinates when switched
  * and also controls which team they are on.
@@ -12,14 +14,14 @@ public class Player implements Serializable {
 private static final long serialVersionUID = 1L;
 	
 	private int[] screenCoords;
-	private int[] color;
+	private AlfredColor[][] color;
 	private int ticks = 0;
 
 	public Player() {
 		ticks = 0;
 	}
 	
-	public void setScreenColor(int[] c) {
+	public void setScreenColor(AlfredColor[][] c) {
 		color = c;
 	}
 	
@@ -27,7 +29,7 @@ private static final long serialVersionUID = 1L;
 		screenCoords = screen;
 	}
 
-	public void setScreen(int[] screen, int[] rgb) {
+	public void setScreen(int[] screen, AlfredColor[][] rgb) {
 		screenCoords = screen;
 		this.color = rgb;
 	}
@@ -36,7 +38,7 @@ private static final long serialVersionUID = 1L;
 		return screenCoords;
 	}
 	
-	public int[] getColor() {
+	public AlfredColor[][] getColor() {
 		return color;
 	}
 	

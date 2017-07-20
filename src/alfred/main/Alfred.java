@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -21,6 +22,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import alfred.utils.AlfredColor;
 import alfred.utils.AveragePixels;
 import alfred.utils.FFmpeg;
 import alfred.utils.ProcMon;
@@ -88,7 +90,7 @@ public class Alfred extends JPanel {
 		//s.setStreamPath("C:/Users/Kyle/Desktop/Recording/NAIR.flv");
 		//s.setupInterface();
 		
-		load();
+		load("C:\\Projects\\AlfredTheMeleeStreamBot\\template.alfred");
 		constructAlfredInterface();
 		
 		
@@ -97,7 +99,7 @@ public class Alfred extends JPanel {
 	public static void main(String[] args) {
 		
 		Alfred alfred = new Alfred();
-		
+
 	}
 	
 	public void load() {
@@ -348,26 +350,24 @@ public class Alfred extends JPanel {
 			public void run() {
 				try {
 					settings.log("Starting Alfred");
-					int[] compare = null;
-					int[] current = null;
-					double playerOneError = 40;
-					double playerTwoError = 35;
+					AlfredColor[][] compare = null;
+					AlfredColor[][] current = null;
 					
 					ArrayList<Integer> p1 = new ArrayList<Integer>();
 					ArrayList<Integer> p2 = new ArrayList<Integer>();
 					for(int i = 0; i < playerOne.size(); i++) {
-						int[] p1Color = playerOne.get(i).getColor();
-						int[] p2Color = playerTwo.get(i).getColor();
-						System.out.println("Player One " + i + ": " + p1Color[0] + ", " + p1Color[1] + ", " + p1Color[2]);
-						System.out.println("Player Two " + i + ": " + p2Color[0] + ", " + p2Color[1] + ", " + p2Color[2]);
+						AlfredColor[][] p1Color = playerOne.get(i).getColor();
+						AlfredColor[][] p2Color = playerTwo.get(i).getColor();
+					//	System.out.println("Player One " + i + ": " + p1Color[0] + ", " + p1Color[1] + ", " + p1Color[2]);
+					//	System.out.println("Player Two " + i + ": " + p2Color[0] + ", " + p2Color[1] + ", " + p2Color[2]);
 					}
-					//while(running) {
-					for(int z = 1; z < 26; z++) {
+					while(running) {
+					//for(int z = 1; z < 99; z++) {
 						// screen algorithm
-						//long pos = ffmpeg.getDuration(settings.getStreamPath());
-						long pos = z;
+						long pos = ffmpeg.getDuration(settings.getStreamPath());
+						//long pos = z;
 						// capture the image
-						String arg = "ffmpeg -ss " + pos + " -i \"" + streamPath + "\" -y -vframes 1 -q:v 2 alfred.png";
+						String arg = "ffmpeg -ss " + pos + " -i \"" + streamPath + "\" -y -vframes 1 -q:v 1 alfred.png";
 						ProcessBuilder builder = new 
 								 ProcessBuilder(
 										 "cmd", "/c", arg);
@@ -386,17 +386,18 @@ public class Alfred extends JPanel {
 						// compare each screen which is actually each star
 						int[] coords = playerOne.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
-						System.out.println("Player One: " + current[0] + ", " + current[1] + ", " + current[2]);
+						//System.out.println(pos + " Player One: " + current[0] + ", " + current[1] + ", " + current[2]);
 						for(int i = 0; i < playerOne.size(); i++) {
 							compare = playerOne.get(i).getColor();
 							//settings.log("" + c1 + " and " + c2);
 							// I don't want that first frame
 							if(pos != 1) {
 								
-								double difference = myError(compare, current);
+								double difference = calculateGridError(compare, current);
+								System.out.println("P1: " + pos + ": " + i + ": " + difference);
 								//settings.log(""+difference);
 								settings.log("P1: " + pos + ": " + i + ": " + difference);
-								if(current != null && difference < playerOneError) {
+								if(current != null && difference < error) {
 									int t = playerOne.get(i).getTick();
 									t++;
 									playerOne.get(i).setTick(t);
@@ -420,17 +421,18 @@ public class Alfred extends JPanel {
 						
 						coords = playerTwo.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
-						System.out.println("Player Two: " + current[0] + ", " + current[1] + ", " + current[2]);
+						//System.out.println(pos + " Player Two: " + current[0] + ", " + current[1] + ", " + current[2]);
 						for(int i = 0; i < playerTwo.size(); i++) {
 							compare = playerTwo.get(i).getColor();
 							//settings.log("" + c1 + " and " + c2);
 							// I don't want that first frame
 							if(pos != 1) {
 								
-								double difference = myError(compare, current);
+								double difference = calculateGridError(compare, current);
+								System.out.println("P2: " + pos + ": " + i + ": " + difference);
 								//settings.log(""+difference);
 								settings.log("P2 " + pos + ": " + i + ": " + difference);
-								if(current != null && difference < playerTwoError) {
+								if(current != null && difference < error) {
 									int t = playerTwo.get(i).getTick();
 									t++;
 									playerTwo.get(i).setTick(t);
@@ -481,12 +483,10 @@ public class Alfred extends JPanel {
 			String path = "C:/Users/Kyle/Desktop/Recording/"+n+".png";
 			if(s.contains("One")) { 
 				int[] p1 = playerOne.get(0).getScreenCoords();
-				drawBox(path, image, p1[0], p1[1], p1[2], p1[3]);
 				p1Score = score;
 				playerOneScore.setText("Player One Score: " + p1Score);
 			} else {
 				int[] p2 = playerTwo.get(0).getScreenCoords();
-				drawBox(path, image, p2[0], p2[1], p2[2], p2[3]);
 				p2Score = score;
 				playerTwoScore.setText("Player Two Score: " + p2Score);
 			}
@@ -626,21 +626,22 @@ public class Alfred extends JPanel {
 	}
 	
 	private double myError(int[] c1, int[] c2) {
-		// alright so this will compute a series of things
-		// the first is the complete difference of RGB ratios, if
-		// theres less than x margin of difference. R will be calculted.
-		// The reason is that theirs a huge difference when stars are added for R.
-		
-		// first we calculate RGB difference
-		double difference = 30;				// assign a difference of 30 or under
-		double rgbSquare = (Math.pow((c1[0] - c2[0]), 2) + Math.pow((c1[1] - c2[1]), 2) + Math.pow((c1[2] - c2[2]), 2));
-		double result = Math.sqrt(rgbSquare);
-		if(result < difference) {
-			// were in the clear
-			double b4Square = Math.pow((c1[0] - c2[0]), 2);
-			return Math.sqrt(b4Square);
-		} else
-			return result;
+		try {
+			// first we calculate RGB difference
+			double difference = 35;				// assign a difference of 30 or under
+			double rgbSquare = (Math.pow((c1[0] - c2[0]), 2) + Math.pow((c1[1] - c2[1]), 2) + Math.pow((c1[2] - c2[2]), 2));
+			double result = Math.sqrt(rgbSquare);
+			settings.log("Found difference between this iteration: " + result);
+			if(result < difference) {
+				// were in the clear
+				double b4Square = Math.pow((c1[1] - c2[1]), 2);
+				return Math.sqrt(b4Square);
+			} else
+				return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 	
 	private boolean checkForSave() {
@@ -653,6 +654,30 @@ public class Alfred extends JPanel {
 				break;
 			}
 		return located;
+	}
+	
+	/*
+	 * @params
+	 * c1 --> comparative array #1, order matters.
+	 * c2 --> comparative array #2, order matters.
+	 */
+	public double calculateGridError(AlfredColor[][] c1, AlfredColor[][] c2) {
+		double result = 0;
+		double total = 0;
+		// throw no result due to error
+		if(c1.length != c2.length || c1[0].length != c2[0].length) return -1;
+		
+		// calculate total error
+		for(int row = 0; row < c1.length; row++) {
+			for(int col = 0; col < c1[0].length; col++) {
+				total += myError(c1[row][col].getColor(), c2[row][col].getColor());
+			}
+		}
+		
+		// now average, divide by matrix row * column
+		result = total / (c1.length * c1[0].length);
+		return result;
+		
 	}
 	
 }

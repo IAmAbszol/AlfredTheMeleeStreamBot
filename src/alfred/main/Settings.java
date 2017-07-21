@@ -200,9 +200,8 @@ public class Settings {
 	}
 	
 	public void log(String n) {
-		log.append(n + "\n");
 		if(ta != null) {
-			ta.setText(log.toString());
+			ta.append(n + "\n");
 			ta.setCaretPosition(ta.getDocument().getLength());
 		}
 		threadLog = n;

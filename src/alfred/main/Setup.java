@@ -542,6 +542,7 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				wm.add(w);
 				hm.add(h);
 				mm.add(image);
+				locked = true;
 				System.out.println("Added Image");
 				
 			}

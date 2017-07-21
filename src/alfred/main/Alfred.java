@@ -177,6 +177,7 @@ public class Alfred {
 							if(pos != 1) {
 								
 								double difference = calculateGridError(compare, current);
+								settings.log("P1 " + pos + ": " + i + ": " + difference);
 								if(current != null && difference < error) {
 									int t = playerOne.get(i).getTick();
 									t++;

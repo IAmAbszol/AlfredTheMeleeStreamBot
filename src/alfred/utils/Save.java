@@ -21,6 +21,8 @@ public class Save implements Serializable {
 	
 	private ArrayList<Player> playerOne;
 	private ArrayList<Player> playerTwo;
+	private ArrayList<Player> playerThree;
+	private ArrayList<Player> playerFour;
 	private String streamPath;
 	private int offset;
 	private int patience;
@@ -44,6 +46,20 @@ public class Save implements Serializable {
 			playerTwo.clear();
 		playerTwo = new ArrayList<Player>();
 		playerTwo.addAll(p);
+	}
+	
+	public void setPlayerThree(ArrayList<Player> p) {
+		if(playerThree != null)
+			playerThree.clear();
+		playerThree = new ArrayList<Player>();
+		playerThree.addAll(p);
+	}
+	
+	public void setPlayerFour(ArrayList<Player> p) {
+		if(playerFour != null)
+			playerFour.clear();
+		playerFour = new ArrayList<Player>();
+		playerFour.addAll(p);
 	}
 	
 	public void setOffset(int offset) {
@@ -86,9 +102,19 @@ public class Save implements Serializable {
 		return playerTwo;
 	}
 	
-	public void save(ArrayList<Player> p1, ArrayList<Player> p2, int offset, int patience, double error, String sp) {
+	public ArrayList<Player> getPlayerThree() {
+		return playerThree;
+	}
+	
+	public ArrayList<Player> getPlayerFour() {
+		return playerFour;
+	}
+	
+	public void save(ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, int patience, double error, String sp) {
 		this.setPlayerOne(p1);
 		this.setPlayerTwo(p2);
+		this.setPlayerThree(p3);
+		this.setPlayerFour(p4);
 		this.setOffset(offset);
 		this.setPatience(patience);
 		this.setError(error);
@@ -123,6 +149,8 @@ public class Save implements Serializable {
 			if(save == null) return null;
 			this.setPlayerOne(save.getPlayerOne());
 			this.setPlayerTwo(save.getPlayerTwo());
+			this.setPlayerThree(save.getPlayerThree());
+			this.setPlayerFour(save.getPlayerFour());
 			this.setOffset(save.getOffset());
 			this.setPatience(save.getPatience());
 			this.setError(save.getError());
@@ -147,6 +175,8 @@ public class Save implements Serializable {
 			if(save == null) return null;
 			this.setPlayerOne(save.getPlayerOne());
 			this.setPlayerTwo(save.getPlayerTwo());
+			this.setPlayerThree(save.getPlayerThree());
+			this.setPlayerFour(save.getPlayerFour());
 			this.setOffset(save.getOffset());
 			this.setPatience(save.getPatience());
 			this.setError(save.getError());
@@ -158,12 +188,14 @@ public class Save implements Serializable {
 		return null;
 	}
 	
-	public void update(File fs, ArrayList<Player> p1, ArrayList<Player> p2, int offset, int patience, double error, String sp) {
+	public void update(File fs, ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, int patience, double error, String sp) {
 		// overwrite gathered save with new settings
 		String path = fs.getPath();
 		fs.delete();
 		this.setPlayerOne(p1);
 		this.setPlayerTwo(p2);
+		this.setPlayerThree(p3);
+		this.setPlayerFour(p4);
 		this.setOffset(offset);
 		this.setPatience(patience);
 		this.setError(error);

@@ -80,7 +80,7 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 	private int curPos = 0;
 	private int offset = 0;
 	
-	private enum selectionState { P1, P2};
+	private enum selectionState { P1, P2, P3, P4};
 	private selectionState theState = selectionState.P1;
 	
 	private String[] links = { "", "" };			// for video help, linking to youtube
@@ -312,8 +312,45 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 						AlfredColor[][] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
 						setting.addPlayerTwo(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
 					}
+					instructions.setText("Player Two: Highlight the star position, watch video for example.");
+					px = py = 0;
+					xm.clear();
+					ym.clear();
+					wm.clear();
+					hm.clear();
+					mm.clear();
+					drawn = false;
+					locked = false;
+					repaint();
+					theState = selectionState.P3;
+					break;
+					
+				case P3:
+					if(xm.size() == 0) return;
+					for(int i = 0; i < xm.size(); i++) {
+						AlfredColor[][] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
+						setting.addPlayerThree(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
+					}
+					instructions.setText("Player Two: Highlight the star position, watch video for example.");
+					px = py = 0;
+					xm.clear();
+					ym.clear();
+					wm.clear();
+					hm.clear();
+					mm.clear();
+					drawn = false;
+					locked = false;
+					repaint();
+					theState = selectionState.P4;
+					break;
+				case P4:
+					if(xm.size() == 0) return;
+					for(int i = 0; i < xm.size(); i++) {
+						AlfredColor[][] tmp = AveragePixels.averageColor(mm.get(i), xm.get(i), ym.get(i), wm.get(i), hm.get(i));
+						setting.addPlayerFour(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
+					}
 					setting.setOffset(offset);
-					setting.setError(.2);
+					setting.setError(30);
 					setting.setPatience(2);
 					setting.setStreamPath(streamPath);
 					frame.dispose();
@@ -426,6 +463,18 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 				g.drawRect(x,y,w,h);
 			}
 			break;
+		case P3:
+			if(drawn) {
+				g.setColor(Color.green);
+				g.drawRect(x, y, w, h);
+			}
+			
+		case P4:
+			if(drawn) {
+				g.setColor(Color.orange);
+				g.drawRect(x, y, w, h);
+			}
+			break;
 		default:
 			break;
 			
@@ -435,72 +484,31 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		switch(theState) {
-		case P1:
-			if(e.getButton() == MouseEvent.BUTTON3 && !locked) {
-				x = y = w = h = px = py = 0;
-				drawn = false;
-			}
-			break;
-		case P2:
-			if(e.getButton() == MouseEvent.BUTTON3 && !locked) {
-				x = y = w = h = px = py = 0;
-				drawn = false;
-			}
-			break;
-		default:
-			break;
+		if(e.getButton() == MouseEvent.BUTTON3 && !locked) {
+			x = y = w = h = px = py = 0;
+			drawn = false;
 		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		switch(theState) {
-			case P1:
-				if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
-					px = e.getX();
-					py = e.getY();
-				}
-				break;
-			case P2:
-				if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
-					px = e.getX();
-					py = e.getY();
-				}
-				break;
-			default:
-				break;
+		if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
+			px = e.getX();
+			py = e.getY();
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		switch(theState) {
-		case P1:
-			if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
-				int curx = e.getX();
-				int cury = e.getY();
-				x = px;
-				y = py;
-				w = Math.abs(px - curx);
-				h = Math.abs(py - cury);
-				drawn = true;
-			}
-			break;
-		case P2:
-			if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
-				int curx = e.getX();
-				int cury = e.getY();
-				x = px;
-				y = py;
-				w = Math.abs(px - curx);
-				h = Math.abs(py - cury);
-				drawn = true;
-			}
-			break;
-		default:
-			break;
-	}
+		if(e.getButton() == MouseEvent.BUTTON1 && !locked) {
+			int curx = e.getX();
+			int cury = e.getY();
+			x = px;
+			y = py;
+			w = Math.abs(px - curx);
+			h = Math.abs(py - cury);
+			drawn = true;
+		}
 	}
 
 	@Override
@@ -521,34 +529,15 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		switch(theState) {
-		case P1:
-			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-				if((x == 0 && y == 0) || (w == 0 && h == 0)) return;
-				xm.add(x);
-				ym.add(y);
-				wm.add(w);
-				hm.add(h);
-				mm.add(image);
-				locked = true;
-				System.out.println("Added Image");
-			}
-			break;
-		case P2:
-			if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-				if((x == 0 && y == 0) || (w == 0 && h == 0)) return;
-				xm.add(x);
-				ym.add(y);
-				wm.add(w);
-				hm.add(h);
-				mm.add(image);
-				locked = true;
-				System.out.println("Added Image");
-				
-			}
-			break;
-		default:
-			break;
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			if((x == 0 && y == 0) || (w == 0 && h == 0)) return;
+			xm.add(x);
+			ym.add(y);
+			wm.add(w);
+			hm.add(h);
+			mm.add(image);
+			locked = true;
+			System.out.println("Added Image");
 		}
 	}
 	

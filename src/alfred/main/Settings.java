@@ -26,6 +26,8 @@ public class Settings {
 
 	private ArrayList<Player> playerOne;
 	private ArrayList<Player> playerTwo;
+	private ArrayList<Player> playerThree;
+	private ArrayList<Player> playerFour;
 	private String streamPath;
 	private int offset;
 	private int patience;
@@ -54,6 +56,8 @@ public class Settings {
 		
 		playerOne = new ArrayList<Player>();
 		playerTwo = new ArrayList<Player>();
+		playerThree = new ArrayList<Player>();
+		playerFour = new ArrayList<Player>();
 		streamPath = null;
 		offset = 0;
 		patience = 0;
@@ -121,6 +125,22 @@ public class Settings {
 		return playerTwo;
 	}
 	
+	public void setPlayerThree(ArrayList<Player> p) {
+		playerThree = p;
+	}
+	
+	public ArrayList<Player> getPlayerThree() {
+		return playerThree;
+	}
+	
+	public void setPlayerFour(ArrayList<Player> p) {
+		playerFour = p;
+	}
+	
+	public ArrayList<Player> getPlayerFour() {
+		return playerFour;
+	}
+	
 	public void addPlayerOne(int x, int y, int w, int h, AlfredColor[][] color) {
 		
 		Player p = new Player();
@@ -135,10 +155,21 @@ public class Settings {
 	}
 	
 	public void addPlayerTwo(int x, int y, int w, int h, AlfredColor[][] color) {
-		
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
 		playerTwo.add(p);
+	}
+	
+	public void addPlayerThree(int x, int y, int w, int h, AlfredColor[][] color) {
+		Player p = new Player();
+		p.setScreen(new int[] { x,y,w,h }, color);
+		playerThree.add(p);
+	}
+	
+	public void addPlayerFour(int x, int y, int w, int h, AlfredColor[][] color) {
+		Player p = new Player();
+		p.setScreen(new int[] { x,y,w,h }, color);
+		playerFour.add(p);
 	}
 	
 	public void addPlayerColorTwo(AlfredColor[][] color) {
@@ -147,9 +178,21 @@ public class Settings {
 		playerTwo.add(p);
 	}
 	
+	public void addPlayerColorThree(AlfredColor[][] color) {
+		Player p = new Player();
+		p.setScreenColor(color);
+		playerThree.add(p);
+	}
+	
+	public void addPlayerColorFour(AlfredColor[][] color) {
+		Player p = new Player();
+		p.setScreenColor(color);
+		playerFour.add(p);
+	}
+	
 	public void save() {
 		save = new Save();
-		save.save(playerOne, playerTwo, offset, patience, error, streamPath);
+		save.save(playerOne, playerTwo, playerThree, playerFour, offset, patience, error, streamPath);
 		System.out.println(streamPath);
 	}
 	
@@ -158,6 +201,8 @@ public class Settings {
 		saveFile = save.load(s);
 		this.setPlayerOne(save.getPlayerOne());
 		this.setPlayerTwo(save.getPlayerTwo());
+		this.setPlayerThree(save.getPlayerThree());
+		this.setPlayerFour(save.getPlayerFour());
 		this.setOffset(save.getOffset());
 		this.setPatience(save.getPatience());
 		this.setError(save.getError());
@@ -169,6 +214,8 @@ public class Settings {
 		saveFile = save.load();
 		this.setPlayerOne(save.getPlayerOne());
 		this.setPlayerTwo(save.getPlayerTwo());
+		this.setPlayerThree(save.getPlayerThree());
+		this.setPlayerFour(save.getPlayerFour());
 		this.setOffset(save.getOffset());
 		this.setPatience(save.getPatience());
 		this.setError(save.getError());
@@ -386,7 +433,7 @@ public class Settings {
 				patience = Integer.parseInt(patienceField.getText());
 				error = Double.parseDouble(errorField.getText());
 				save = new Save();
-				save.update(saveFile, playerOne, playerTwo, offset, patience, error, streamPath);
+				save.update(saveFile, playerOne, playerTwo, playerThree, playerFour, offset, patience, error, streamPath);
 				
 			}
 			

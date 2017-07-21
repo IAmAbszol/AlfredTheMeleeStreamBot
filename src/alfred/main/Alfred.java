@@ -51,6 +51,8 @@ public class Alfred {
 	private FFmpeg ffmpeg;
 	private ArrayList<Player> playerOne = new ArrayList<Player>();
 	private ArrayList<Player> playerTwo = new ArrayList<Player>();
+	private ArrayList<Player> playerThree = new ArrayList<Player>();
+	private ArrayList<Player> playerFour = new ArrayList<Player>();
 	private int patience = 0;
 	private double error = .0;
 	private String streamPath = null;
@@ -60,10 +62,14 @@ public class Alfred {
 	private JLabel roundsLabel;
 	private JLabel playerOneScore;
 	private JLabel playerTwoScore;
+	private JLabel playerThreeScore;
+	private JLabel playerFourScore;
 	private JComboBox roundsCombo;
 	
 	private int p1Score = 0;
 	private int p2Score = 0;
+	private int p3Score = 0;
+	private int p4Score = 0;
 	private boolean running = false;
 	
 	private Thread runningThread;
@@ -91,6 +97,10 @@ public class Alfred {
 		playerOne.addAll(settings.getPlayerOne());
 		playerTwo.clear();
 		playerTwo.addAll(settings.getPlayerTwo());
+		playerThree.clear();
+		playerThree.addAll(settings.getPlayerThree());
+		playerFour.clear();
+		playerFour.addAll(settings.getPlayerFour());
 		patience = settings.getPatience();
 		error = settings.getError();
 		streamPath = settings.getStreamPath();
@@ -103,6 +113,10 @@ public class Alfred {
 		playerOne.addAll(settings.getPlayerOne());
 		playerTwo.clear();
 		playerTwo.addAll(settings.getPlayerTwo());
+		playerThree.clear();
+		playerThree.addAll(settings.getPlayerThree());
+		playerFour.clear();
+		playerFour.addAll(settings.getPlayerFour());
 		patience = settings.getPatience();
 		error = settings.getError();
 		streamPath = settings.getStreamPath();
@@ -115,6 +129,10 @@ public class Alfred {
 		playerOne.addAll(settings.getPlayerOne());
 		playerTwo.clear();
 		playerTwo.addAll(settings.getPlayerTwo());
+		playerThree.clear();
+		playerThree.addAll(settings.getPlayerThree());
+		playerFour.clear();
+		playerFour.addAll(settings.getPlayerFour());
 		patience = settings.getPatience();
 		error = settings.getError();
 		streamPath = settings.getStreamPath();
@@ -130,6 +148,10 @@ public class Alfred {
 		playerOne.addAll(settings.getPlayerOne());
 		playerTwo.clear();
 		playerTwo.addAll(settings.getPlayerTwo());
+		playerThree.clear();
+		playerThree.addAll(settings.getPlayerThree());
+		playerFour.clear();
+		playerFour.addAll(settings.getPlayerFour());
 		patience = settings.getPatience();
 		error = settings.getError();
 		streamPath = settings.getStreamPath();
@@ -145,6 +167,8 @@ public class Alfred {
 					
 					ArrayList<Integer> p1 = new ArrayList<Integer>();
 					ArrayList<Integer> p2 = new ArrayList<Integer>();
+					ArrayList<Integer> p3 = new ArrayList<Integer>();
+					ArrayList<Integer> p4 = new ArrayList<Integer>();
 					while(running) {
 						// screen algorithm
 						long pos = ffmpeg.getDuration(settings.getStreamPath());
@@ -228,6 +252,66 @@ public class Alfred {
 							}
 						}
 						
+						coords = playerThree.get(0).getScreenCoords();
+						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
+						for(int i = 0; i < playerThree.size(); i++) {
+							compare = playerThree.get(i).getColor();
+							// I don't want that first frame
+							if(pos != 1) {
+								
+								double difference = calculateGridError(compare, current);
+								settings.log("P2 " + pos + ": " + i + ": " + difference);
+								if(current != null && difference < error) {
+									int t = playerThree.get(i).getTick();
+									t++;
+									playerThree.get(i).setTick(t);
+									if(playerThree.get(i).getTick() >= patience) {
+										
+										for(int k = 0; k < playerThree.size(); k++) 
+											playerThree.get(k).setTick(0);
+										p3.add(i);
+										
+									}
+								} else {
+									int t = playerThree.get(i).getTick();
+									t--;
+									playerThree.get(i).setTick(t);
+									if(playerThree.get(i).getTick() < 0) playerThree.get(i).setTick(0);
+								}
+								
+							}
+						}
+						
+						coords = playerFour.get(0).getScreenCoords();
+						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
+						for(int i = 0; i < playerFour.size(); i++) {
+							compare = playerFour.get(i).getColor();
+							// I don't want that first frame
+							if(pos != 1) {
+								
+								double difference = calculateGridError(compare, current);
+								settings.log("P2 " + pos + ": " + i + ": " + difference);
+								if(current != null && difference < error) {
+									int t = playerFour.get(i).getTick();
+									t++;
+									playerFour.get(i).setTick(t);
+									if(playerFour.get(i).getTick() >= patience) {
+										
+										for(int k = 0; k < playerFour.size(); k++) 
+											playerFour.get(k).setTick(0);
+										p4.add(i);
+										
+									}
+								} else {
+									int t = playerFour.get(i).getTick();
+									t--;
+									playerFour.get(i).setTick(t);
+									if(playerFour.get(i).getTick() < 0) playerFour.get(i).setTick(0);
+								}
+								
+							}
+						}
+						
 						// handle event here. 
 						// Basically, it takes the last matched error
 						// then looks at what it's score should be + 1 for the screen pos
@@ -240,6 +324,14 @@ public class Alfred {
 						if(p2.size() > 0) {
 							handlePlayer(image, pos + "P2", pos + ": Player Two",p2);
 							p2.clear();
+						}
+						if(p3.size() > 0) {
+							handlePlayer(image, pos  + "P3" , pos + ": Player Three", p3);
+							p3.clear();
+						}
+						if(p4.size() > 0) {
+							handlePlayer(image, pos + "P4", pos + ": Player Four", p4);
+							p4.clear();
 						}
 					}
 				} catch (Exception e) {
@@ -255,15 +347,24 @@ public class Alfred {
 			int score = p.get(p.size() - 1);
 			settings.log(s + "->" + p.get(p.size() - 1));
 			if(s.contains("One")) { 
-				int[] p1 = playerOne.get(0).getScreenCoords();
 				p1Score = score;
 				if(playerOneScore != null)
 					playerOneScore.setText("Player One Score: " + p1Score);
-			} else {
-				int[] p2 = playerTwo.get(0).getScreenCoords();
+			}
+			if(s.contains("Two")) {
 				p2Score = score;
 				if(playerTwoScore != null)
 					playerTwoScore.setText("Player Two Score: " + p2Score);
+			}
+			if(s.contains("Three")) {
+				p3Score = score;
+				if(playerThreeScore != null)
+					playerThreeScore.setText("Player Three Score: " + p3Score);
+			}
+			if(s.contains("Four")) {
+				p4Score = score;
+				if(playerFourScore != null) 
+					playerFourScore.setText("Player Four Score: " + p4Score);
 			}
 			if(panel != null)
 				panel.repaint();
@@ -427,12 +528,28 @@ public class Alfred {
 		return p2Score;
 	}
 	
+	public int getPlayerThreeScore() {
+		return p3Score;
+	}
+	
+	public int getPlayerFourScore() {
+		return p4Score;
+	}
+	
 	public void setPlayerOneScore(int s) {
 		p1Score = s;
 	}
 	
 	public void setPlayerTwoScore(int s) {
 		p2Score = s;
+	}
+	
+	public void setPlayerThreeScore(int s) {
+		p3Score = s;
+	}
+	
+	public void setPlayerFourScore(int s) {
+		p4Score = s;
 	}
 	
 	public Settings getSettings() {
@@ -445,6 +562,14 @@ public class Alfred {
 	
 	public void setSettings(Settings s) {
 		settings = s;
+	}
+	
+	public ArrayList<Player> getPlayerOne() {
+		return playerOne;
+	}
+	
+	public ArrayList<Player> getPlayerTwo() {
+		return playerTwo;
 	}
 	
 }

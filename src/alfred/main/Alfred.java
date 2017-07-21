@@ -572,4 +572,12 @@ public class Alfred {
 		return playerTwo;
 	}
 	
+	public ArrayList<Player> getPlayerThree() {
+		return playerThree;
+	}
+	
+	public ArrayList<Player> getPlayerFour() {
+		return playerFour;
+	}
+	
 }

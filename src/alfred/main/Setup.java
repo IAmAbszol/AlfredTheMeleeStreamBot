@@ -350,8 +350,6 @@ public class Setup extends JPanel implements MouseListener, KeyListener, Runnabl
 						setting.addPlayerFour(xm.get(i), ym.get(i), wm.get(i), hm.get(i), tmp);
 					}
 					setting.setOffset(offset);
-					setting.setError(30);
-					setting.setPatience(2);
 					setting.setStreamPath(streamPath);
 					frame.dispose();
 					f.dispose();

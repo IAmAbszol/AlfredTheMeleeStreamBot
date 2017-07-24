@@ -25,8 +25,6 @@ public class Save implements Serializable {
 	private ArrayList<Player> playerFour;
 	private String streamPath;
 	private int offset;
-	private int patience;
-	private double error;
 	
 	
 	public Save() {
@@ -66,28 +64,12 @@ public class Save implements Serializable {
 		this.offset = offset;
 	}
 	
-	public void setPatience(int p) {
-		patience = p;
-	}
-	
-	public void setError(double e) {
-		error = e;
-	}
-	
 	public void setStreamPath(String s) {
 		streamPath = s;
 	}
 	
 	public int getOffset() {
 		return offset;
-	}
-	
-	public int getPatience() {
-		return patience;
-	}
-	
-	public double getError() {
-		return error;
 	}
 	
 	public String getStreamPath() {
@@ -110,14 +92,12 @@ public class Save implements Serializable {
 		return playerFour;
 	}
 	
-	public void save(ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, int patience, double error, String sp) {
+	public void save(ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, String sp) {
 		this.setPlayerOne(p1);
 		this.setPlayerTwo(p2);
 		this.setPlayerThree(p3);
 		this.setPlayerFour(p4);
 		this.setOffset(offset);
-		this.setPatience(patience);
-		this.setError(error);
 		this.setStreamPath(sp);
 		try {
 			DateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
@@ -152,8 +132,6 @@ public class Save implements Serializable {
 			this.setPlayerThree(save.getPlayerThree());
 			this.setPlayerFour(save.getPlayerFour());
 			this.setOffset(save.getOffset());
-			this.setPatience(save.getPatience());
-			this.setError(save.getError());
 			this.setStreamPath(save.getStreamPath());
 			return f;
 		} catch (Exception e) {
@@ -178,8 +156,6 @@ public class Save implements Serializable {
 			this.setPlayerThree(save.getPlayerThree());
 			this.setPlayerFour(save.getPlayerFour());
 			this.setOffset(save.getOffset());
-			this.setPatience(save.getPatience());
-			this.setError(save.getError());
 			this.setStreamPath(save.getStreamPath());
 			return f;
 		} catch (Exception e) {
@@ -188,7 +164,7 @@ public class Save implements Serializable {
 		return null;
 	}
 	
-	public void update(File fs, ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, int patience, double error, String sp) {
+	public void update(File fs, ArrayList<Player> p1, ArrayList<Player> p2, ArrayList<Player> p3, ArrayList<Player> p4, int offset, String sp) {
 		// overwrite gathered save with new settings
 		String path = fs.getPath();
 		fs.delete();
@@ -197,8 +173,6 @@ public class Save implements Serializable {
 		this.setPlayerThree(p3);
 		this.setPlayerFour(p4);
 		this.setOffset(offset);
-		this.setPatience(patience);
-		this.setError(error);
 		this.setStreamPath(sp);
 		try {
 			File f = new File(path);		// returns desktop location

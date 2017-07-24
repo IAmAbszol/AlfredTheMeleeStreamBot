@@ -30,8 +30,6 @@ public class Settings {
 	private ArrayList<Player> playerFour;
 	private String streamPath;
 	private int offset;
-	private int patience;
-	private double error;
 	private File saveFile;
 	
 	// logging
@@ -60,8 +58,6 @@ public class Settings {
 		playerFour = new ArrayList<Player>();
 		streamPath = null;
 		offset = 0;
-		patience = 0;
-		error = 0;
 		
 	}
 	
@@ -91,22 +87,6 @@ public class Settings {
 	
 	public int getOffset() {
 		return offset;
-	}
-	
-	public void setPatience(int p) {
-		patience = p;
-	}
-	
-	public int getPatience() {
-		return patience;
-	}
-	
-	public void setError(double d) {
-		error = d;
-	}
-	
-	public double getError() {
-		return error;
 	}
 	
 	public void setPlayerOne(ArrayList<Player> p) {
@@ -145,54 +125,70 @@ public class Settings {
 		
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
+		p.setPatience(2);
+		p.setError(30);
 		playerOne.add(p);
 	}
 	
 	public void addPlayerColorOne(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
+		p.setPatience(2);
+		p.setError(30);
 		playerOne.add(p);
 	}
 	
 	public void addPlayerTwo(int x, int y, int w, int h, AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
+		p.setPatience(2);
+		p.setError(30);
 		playerTwo.add(p);
 	}
 	
 	public void addPlayerThree(int x, int y, int w, int h, AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
+		p.setPatience(2);
+		p.setError(30);
 		playerThree.add(p);
 	}
 	
 	public void addPlayerFour(int x, int y, int w, int h, AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreen(new int[] { x,y,w,h }, color);
+		p.setPatience(2);
+		p.setError(30);
 		playerFour.add(p);
 	}
 	
 	public void addPlayerColorTwo(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
+		p.setPatience(2);
+		p.setError(30);
 		playerTwo.add(p);
 	}
 	
 	public void addPlayerColorThree(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
+		p.setPatience(2);
+		p.setError(30);
 		playerThree.add(p);
 	}
 	
 	public void addPlayerColorFour(AlfredColor[][] color) {
 		Player p = new Player();
 		p.setScreenColor(color);
+		p.setPatience(2);
+		p.setError(30);
 		playerFour.add(p);
 	}
 	
 	public void save() {
 		save = new Save();
-		save.save(playerOne, playerTwo, playerThree, playerFour, offset, patience, error, streamPath);
+		save.save(playerOne, playerTwo, playerThree, playerFour, offset, streamPath);
 		System.out.println(streamPath);
 	}
 	
@@ -204,8 +200,6 @@ public class Settings {
 		this.setPlayerThree(save.getPlayerThree());
 		this.setPlayerFour(save.getPlayerFour());
 		this.setOffset(save.getOffset());
-		this.setPatience(save.getPatience());
-		this.setError(save.getError());
 		this.setStreamPath(save.getStreamPath());
 	}
 	
@@ -217,8 +211,6 @@ public class Settings {
 		this.setPlayerThree(save.getPlayerThree());
 		this.setPlayerFour(save.getPlayerFour());
 		this.setOffset(save.getOffset());
-		this.setPatience(save.getPatience());
-		this.setError(save.getError());
 		this.setStreamPath(save.getStreamPath());
 	}
 	
@@ -331,117 +323,6 @@ public class Settings {
 		frame.setVisible(true);
 	}
 	
-	public void settingsInterface() {
-		frame = new JFrame("Settings Interface");
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setBounds(100, 100, 530, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		frame.setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JLabel settingsLabel = new JLabel("Settings");
-		settingsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		settingsLabel.setFont(new Font("Arial", Font.BOLD, 18));
-		settingsLabel.setBounds(12, 13, 488, 40);
-		contentPane.add(settingsLabel);
-		
-		JButton viewLogs = new JButton("View Logs");
-		viewLogs.setFont(new Font("Arial", Font.BOLD, 14));
-		viewLogs.setBounds(12, 66, 150, 40);
-		contentPane.add(viewLogs);
-		
-		JLabel lblNewLabel = new JLabel("Offset");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel.setBounds(174, 66, 198, 40);
-		contentPane.add(lblNewLabel);
-		
-		offsetField = new JTextField();
-		offsetField.setHorizontalAlignment(SwingConstants.CENTER);
-		offsetField.setFont(new Font("Arial", Font.BOLD, 14));
-		offsetField.setBounds(384, 75, 116, 22);
-		contentPane.add(offsetField);
-		offsetField.setColumns(10);
-		
-		JLabel lblNewLabel_1 = new JLabel("Patience");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, 14));
-		lblNewLabel_1.setBounds(174, 119, 198, 40);
-		contentPane.add(lblNewLabel_1);
-		
-		patienceField = new JTextField();
-		patienceField.setHorizontalAlignment(SwingConstants.CENTER);
-		patienceField.setFont(new Font("Arial", Font.BOLD, 14));
-		patienceField.setBounds(384, 128, 116, 22);
-		contentPane.add(patienceField);
-		patienceField.setColumns(10);
-		
-		JLabel lblError = new JLabel("Error");
-		lblError.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblError.setFont(new Font("Arial", Font.BOLD, 14));
-		lblError.setBounds(174, 172, 198, 40);
-		contentPane.add(lblError);
-		
-		errorField = new JTextField();
-		errorField.setHorizontalAlignment(SwingConstants.CENTER);
-		errorField.setFont(new Font("Arial", Font.BOLD, 14));
-		errorField.setBounds(384, 181, 116, 22);
-		contentPane.add(errorField);
-		errorField.setColumns(10);
-		
-		JButton changeStream = new JButton("Change Stream");
-		changeStream.setFont(new Font("Arial", Font.BOLD, 14));
-		changeStream.setBounds(12, 119, 150, 40);
-		contentPane.add(changeStream);
-		
-		JButton updateButton = new JButton("Update");
-		updateButton.setFont(new Font("Arial", Font.BOLD, 14));
-		updateButton.setBounds(12, 172, 150, 40);
-		contentPane.add(updateButton);
-		
-		frame.setResizable(false);
-		frame.setVisible(true);
-		
-		offsetField.setText(""+offset);
-		patienceField.setText(""+patience);
-		errorField.setText(""+error);
-		
-		viewLogs.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showLog();
-			}
-			
-		});
-		
-		changeStream.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				streamSelectionInterface();
-			}
-			
-		});
-		
-		updateButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				offset = Integer.parseInt(offsetField.getText());
-				patience = Integer.parseInt(patienceField.getText());
-				error = Double.parseDouble(errorField.getText());
-				save = new Save();
-				save.update(saveFile, playerOne, playerTwo, playerThree, playerFour, offset, patience, error, streamPath);
-				
-			}
-			
-		});
-		
-	}
-	
-
 	public void showLog() {
 		textFrame = new JFrame("Logs");
 		textFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

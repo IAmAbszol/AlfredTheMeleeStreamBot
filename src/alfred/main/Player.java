@@ -16,11 +16,30 @@ private static final long serialVersionUID = 1L;
 	private int[] screenCoords;
 	private AlfredColor[][] color;
 	private int ticks = 0;
+	
+	private int patience = 2;
+	private double error = 30;
 
 	private int assigned_number = 0;
 	
 	public Player() {
 		ticks = 0;
+	}
+	
+	public void setPatience(int i) {
+		patience = i;
+	}
+	
+	public int getPatience() {
+		return patience;
+	}
+	
+	public void setError(double d) {
+		error = d;
+	}
+	
+	public double getError() {
+		return error;
 	}
 	
 	public void setAssignedNumber(int i) {

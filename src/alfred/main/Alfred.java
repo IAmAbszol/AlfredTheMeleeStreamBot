@@ -53,8 +53,6 @@ public class Alfred {
 	private ArrayList<Player> playerTwo = new ArrayList<Player>();
 	private ArrayList<Player> playerThree = new ArrayList<Player>();
 	private ArrayList<Player> playerFour = new ArrayList<Player>();
-	private int patience = 0;
-	private double error = .0;
 	private String streamPath = null;
 	
 	private JPanel panel;
@@ -101,8 +99,6 @@ public class Alfred {
 		playerThree.addAll(settings.getPlayerThree());
 		playerFour.clear();
 		playerFour.addAll(settings.getPlayerFour());
-		patience = settings.getPatience();
-		error = settings.getError();
 		streamPath = settings.getStreamPath();
 		settings.setStreamPath(streamPath);
 	}
@@ -117,8 +113,6 @@ public class Alfred {
 		playerThree.addAll(settings.getPlayerThree());
 		playerFour.clear();
 		playerFour.addAll(settings.getPlayerFour());
-		patience = settings.getPatience();
-		error = settings.getError();
 		streamPath = settings.getStreamPath();
 		settings.setStreamPath(streamPath);
 	}
@@ -133,8 +127,6 @@ public class Alfred {
 		playerThree.addAll(settings.getPlayerThree());
 		playerFour.clear();
 		playerFour.addAll(settings.getPlayerFour());
-		patience = settings.getPatience();
-		error = settings.getError();
 		streamPath = settings.getStreamPath();
 	}
 	
@@ -152,8 +144,6 @@ public class Alfred {
 		playerThree.addAll(settings.getPlayerThree());
 		playerFour.clear();
 		playerFour.addAll(settings.getPlayerFour());
-		patience = settings.getPatience();
-		error = settings.getError();
 		streamPath = settings.getStreamPath();
 		settings.setStreamPath(streamPath);
 		if(status != null)
@@ -169,6 +159,10 @@ public class Alfred {
 					ArrayList<Integer> p2 = new ArrayList<Integer>();
 					ArrayList<Integer> p3 = new ArrayList<Integer>();
 					ArrayList<Integer> p4 = new ArrayList<Integer>();
+					
+					int patience = 0;
+					double error = 0;
+					
 					while(running) {
 						// screen algorithm
 						long pos = ffmpeg.getDuration(settings.getStreamPath());
@@ -189,12 +183,13 @@ public class Alfred {
 						
 						// grab the image
 						BufferedImage image = ImageIO.read(new File("alfred.png"));
-						
 						// compare each screen which is actually each star
 						int[] coords = playerOne.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
 						//System.out.println(pos + " Player One: " + current[0] + ", " + current[1] + ", " + current[2]);
 						for(int i = 0; i < playerOne.size(); i++) {
+							error = playerOne.get(i).getError();
+							patience = playerOne.get(i).getPatience();
 							compare = playerOne.get(i).getColor();
 							//settings.log("" + c1 + " and " + c2);
 							// I don't want that first frame
@@ -225,6 +220,8 @@ public class Alfred {
 						coords = playerTwo.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
 						for(int i = 0; i < playerTwo.size(); i++) {
+							error = playerTwo.get(i).getError();
+							patience = playerTwo.get(i).getPatience();
 							compare = playerTwo.get(i).getColor();
 							// I don't want that first frame
 							if(pos != 1) {
@@ -255,6 +252,8 @@ public class Alfred {
 						coords = playerThree.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
 						for(int i = 0; i < playerThree.size(); i++) {
+							error = playerThree.get(i).getError();
+							patience = playerThree.get(i).getPatience();
 							compare = playerThree.get(i).getColor();
 							// I don't want that first frame
 							if(pos != 1) {
@@ -285,6 +284,8 @@ public class Alfred {
 						coords = playerFour.get(0).getScreenCoords();
 						current = AveragePixels.averageColor(image, coords[0], coords[1], coords[2], coords[3]);
 						for(int i = 0; i < playerFour.size(); i++) {
+							error = playerFour.get(i).getError();
+							patience = playerFour.get(i).getPatience();
 							compare = playerFour.get(i).getColor();
 							// I don't want that first frame
 							if(pos != 1) {
@@ -467,7 +468,6 @@ public class Alfred {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				settings.settingsInterface();
 			}
 			
 		});
@@ -578,6 +578,16 @@ public class Alfred {
 	
 	public ArrayList<Player> getPlayerFour() {
 		return playerFour;
+	}
+	
+	public void changeError(ArrayList<Player> p, double error) {
+		for(int i = 0; i < p.size(); i++) 
+			p.get(i).setError(error);
+	}
+	
+	public void changePatience(ArrayList<Player> p, int patience) {
+		for(int i = 0; i < p.size(); i++) 
+			p.get(i).setPatience(patience);
 	}
 	
 }

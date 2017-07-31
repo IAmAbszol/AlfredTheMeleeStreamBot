@@ -57,12 +57,10 @@ public class Alfred {
 	
 	private JPanel panel;
 	private JLabel status;
-	private JLabel roundsLabel;
 	private JLabel playerOneScore;
 	private JLabel playerTwoScore;
 	private JLabel playerThreeScore;
 	private JLabel playerFourScore;
-	private JComboBox roundsCombo;
 	
 	private int p1Score = 0;
 	private int p2Score = 0;
@@ -259,7 +257,7 @@ public class Alfred {
 							if(pos != 1) {
 								
 								double difference = calculateGridError(compare, current);
-								settings.log("P2 " + pos + ": " + i + ": " + difference);
+								settings.log("P3" + pos + ": " + i + ": " + difference);
 								if(current != null && difference < error) {
 									int t = playerThree.get(i).getTick();
 									t++;
@@ -291,7 +289,7 @@ public class Alfred {
 							if(pos != 1) {
 								
 								double difference = calculateGridError(compare, current);
-								settings.log("P2 " + pos + ": " + i + ": " + difference);
+								settings.log("P4 " + pos + ": " + i + ": " + difference);
 								if(current != null && difference < error) {
 									int t = playerFour.get(i).getTick();
 									t++;
@@ -392,27 +390,14 @@ public class Alfred {
 		status.setBounds(12, 13, 408, 50);
 		panel.add(status);
 		
-		roundsLabel = new JLabel("Rounds To Win");
-		roundsLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		roundsLabel.setFont(new Font("Arial", Font.BOLD, 18));
-		roundsLabel.setBounds(12, 76, 150, 50);
-		panel.add(roundsLabel);
-		
-		JComboBox roundsCombo = new JComboBox();
-		roundsCombo.setFont(new Font("Arial", Font.BOLD, 14));
-		roundsCombo.setBounds(320, 88, 100, 29);
-		panel.add(roundsCombo);
-		
-		for(int i = 0; i < rounds.length; i++) roundsCombo.addItem(rounds[i]);
-		
 		JButton start = new JButton("Start Alfred");
 		start.setFont(new Font("Arial", Font.BOLD, 14));
-		start.setBounds(12, 139, 150, 40);
+		start.setBounds(12, 76, 150, 40);
 		panel.add(start);
 		
 		JButton viewSettings = new JButton("View Settings");
 		viewSettings.setFont(new Font("Arial", Font.BOLD, 14));
-		viewSettings.setBounds(12, 192, 150, 40);
+		viewSettings.setBounds(12, 139, 150, 40);
 		panel.add(viewSettings);
 		
 		JButton reset = new JButton("Reset");
@@ -422,13 +407,23 @@ public class Alfred {
 		
 		playerOneScore = new JLabel("Player One Score: " + p1Score);
 		playerOneScore.setFont(new Font("Arial", Font.BOLD, 14));
-		playerOneScore.setBounds(270, 192, 150, 16);
+		playerOneScore.setBounds(12, 192, 150, 16);
 		panel.add(playerOneScore);
 		
 		playerTwoScore = new JLabel("Player Two Score: " + p2Score);
 		playerTwoScore.setFont(new Font("Arial", Font.BOLD, 14));
-		playerTwoScore.setBounds(270, 221, 150, 16);
+		playerTwoScore.setBounds(12, 221, 150, 16);
 		panel.add(playerTwoScore);
+		
+		playerThreeScore = new JLabel("Player Three Score: " + p3Score);
+		playerThreeScore.setFont(new Font("Arial", Font.BOLD, 14));
+		playerThreeScore.setBounds(270, 192, 150, 16);
+		panel.add(playerThreeScore);
+		
+		playerFourScore = new JLabel("Player Four Score: " + p4Score);
+		playerFourScore.setFont(new Font("Arial", Font.BOLD, 14));
+		playerFourScore.setBounds(270, 221, 150, 16);
+		panel.add(playerFourScore);
 		
 		frame.setResizable(false);
 		frame.setVisible(true);

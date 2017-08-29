@@ -67,6 +67,16 @@ public class Alfred {
 	private int p3Score = 0;
 	private int p4Score = 0;
 	private boolean running = false;
+	private boolean foundPlayerOneStock = false;
+	private boolean foundPlayerTwoStock = false;
+	private boolean foundPlayerThreeStock = false;
+	private boolean foundPlayerFourStock = false;
+	
+	private int maxStockCount = 4;
+	private int p1StockCount = maxStockCount;
+	private int p2StockCount = maxStockCount;
+	private int p3StockCount = maxStockCount;
+	private int p4StockCount = maxStockCount;
 	
 	private Thread runningThread;
 	
@@ -132,6 +142,7 @@ public class Alfred {
 		settings.save();
 	}
 
+	/*
 	public void watch() {
 		running = true;
 		playerOne.clear();
@@ -339,6 +350,143 @@ public class Alfred {
 			}
 		});
 		runningThread.start();
+	}
+	*/
+	
+	public void watch() {
+		
+		running = true;
+		playerOne.clear();
+		playerOne.addAll(settings.getPlayerOne());
+		playerTwo.clear();
+		playerTwo.addAll(settings.getPlayerTwo());
+		playerThree.clear();
+		playerThree.addAll(settings.getPlayerThree());
+		playerFour.clear();
+		playerFour.addAll(settings.getPlayerFour());
+		streamPath = settings.getStreamPath();
+		settings.setStreamPath(streamPath);
+		if(status != null)
+			status.setText("<html>Status: <font color='green'>Running</font></html>");
+
+		runningThread = new Thread(new Runnable() {
+			public void run() {
+				
+				settings.log("Starting Alfred");
+				AlfredColor[][] playerOneCompare = null;
+				AlfredColor[][] playerTwoCompare = null;
+				AlfredColor[][] playerThreeCompare = null;
+				AlfredColor[][] playerFourCompare = null;
+				
+				ArrayList<AlfredColor[][]> current = new ArrayList<AlfredColor[][]>();
+				
+				ArrayList<Integer> p1 = new ArrayList<Integer>();
+				ArrayList<Integer> p2 = new ArrayList<Integer>();
+				ArrayList<Integer> p3 = new ArrayList<Integer>();
+				ArrayList<Integer> p4 = new ArrayList<Integer>();
+				
+				int patience = 0;
+				double error = 0;
+				int offset = 0;
+				
+				p1StockCount = p2StockCount = p3StockCount = p4StockCount = maxStockCount;
+				
+				while(running) {
+				
+					try {
+					
+						// screen algorithm
+						long pos = ffmpeg.getDuration(settings.getStreamPath());
+						//long pos = z;
+						// capture the image
+						String arg = "ffmpeg -ss " + pos + " -i \"" + streamPath + "\" -y -vframes 1 -q:v 1 alfred.png";
+						ProcessBuilder builder = new 
+								 ProcessBuilder(
+										 "cmd", "/c", arg);
+						
+						builder.redirectErrorStream(true);
+						Process p = builder.start();
+						
+						ProcMon.create(p);
+						while(!ProcMon.isComplete()) {
+							System.out.print("");
+						}
+						
+						// grab the image
+						BufferedImage image = ImageIO.read(new File("alfred.png"));
+						
+						/*
+						 * First to analyze player one
+						 */
+						patience = playerOne.get(0).getPatience();
+						error = playerOne.get(0).getError();
+						offset = playerOne.get(0).getOffset();
+						
+						// grab the first screen coordinate where the stock is presumed to be.
+						// color differences in any other menu should trigger a "no stock found"
+						if(!foundPlayerOneStock) {
+							playerOneCompare = AveragePixels.averageColor(image, playerOne.get(0).getScreenCoords()[0], 
+									playerOne.get(0).getScreenCoords()[1], 
+									playerOne.get(0).getScreenCoords()[2], 
+									playerOne.get(0).getScreenCoords()[3]);
+							
+							// now to compare to the presumed three other stocks, assumin it hasn't been found yet
+							for(int i = 1; i < maxStockCount; i++) {
+								AlfredColor[][] currentSingle = AveragePixels.averageColor(image, playerOne.get(0).getScreenCoords()[0] - (i * offset), 
+										playerOne.get(0).getScreenCoords()[1], 
+										playerOne.get(0).getScreenCoords()[2], 
+										playerOne.get(0).getScreenCoords()[3]);
+								current.add(currentSingle);
+							}
+							
+							// current is loaded up for comparison, now to compare then average
+							double result = 0;
+							for(int i = 0; i < current.size(); i++) {
+								result += calculateGridError(current.get(i), playerOneCompare);
+							}
+							double calculatedError = result / current.size();
+							
+							if(calculatedError < error) {
+								foundPlayerOneStock = true;
+							}
+							
+							current.clear();
+							
+						} else {
+							// assuming that we have found the stock area/we are in game
+							// the comparator value is stored inside p1
+							
+							// first reload current to extract each stock, even the first this time as it's getting compared
+							for(int i = 0; i < maxStockCount; i++) {
+								AlfredColor[][] currentSingle = AveragePixels.averageColor(image, playerOne.get(0).getScreenCoords()[0] - (i * offset), 
+										playerOne.get(0).getScreenCoords()[1], 
+										playerOne.get(0).getScreenCoords()[2], 
+										playerOne.get(0).getScreenCoords()[3]);
+								current.add(currentSingle);
+							}
+							
+							// now to compare each stock to determine current stock loss
+							for(int i = 0; i < current.size(); i++) {
+								double result = calculateGridError(current.get(i), playerOneCompare);
+								if(result < error) {
+									p1StockCount = maxStockCount - i;
+									break;
+								}
+							}
+							
+						}
+						
+						
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+					
+			}
+		});
+		
 	}
 	
 	private void handlePlayer(BufferedImage image, String n, String s, ArrayList<Integer> p) {

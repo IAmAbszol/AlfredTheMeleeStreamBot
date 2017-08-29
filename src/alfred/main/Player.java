@@ -19,6 +19,7 @@ private static final long serialVersionUID = 1L;
 	
 	private int patience = 2;
 	private double error = 30;
+	private int offset = 30;
 
 	private int assigned_number = 0;
 	
@@ -77,6 +78,14 @@ private static final long serialVersionUID = 1L;
 	
 	public void setTick(int i) {
 		ticks = i;
+	}
+	
+	public int getOffset() {
+		return offset;
+	}
+	
+	public void setOffset(int i) {
+		offset = i;
 	}
 	
 }
